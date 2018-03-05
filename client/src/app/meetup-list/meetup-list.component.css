@@ -1,0 +1,32 @@
+.list-group-item {
+  margin-bottom: -2px;
+}
+
+.container-separated-items {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.title {
+  font-weight: 700;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+.wrappable-content {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  white-space: nowrap;
+}
+
+.wrappable-content > * {
+  padding: 5px;
+}
+
+.link {
+  white-space:nowrap;
+}

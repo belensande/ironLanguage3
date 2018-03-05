@@ -1,0 +1,66 @@
+<div class="alert alert-danger" *ngIf="error">
+  {{error}}
+</div>
+
+<div class="row" [hidden]="!assistMeetups.length">
+  <div class="col-xs-12">
+    <h3>Assist</h3>
+    <div class="list-group">
+      <div class="list-group-item title">
+        <div class="row">
+          <div class="col-xs-3">Owner</div>
+          <div class="col-xs-2">City</div>
+          <div class="col-xs-2">Assist</div>
+          <div class="col-xs-5">Languages</div>
+        </div>
+      </div>
+      <div class="list-group-item" *ngFor="let meetup of assistMeetups">
+        <div class="row container-separated-items">
+          <div class="col-xs-3"><a [routerLink]="['/profile', {id: meetup.owner._id}]">{{meetup.owner.username}}</a></div>
+          <div class="col-xs-2"><span>{{meetup.city}}</span></div>
+          <div class="col-xs-2"><span>{{meetup.assist.length}}</span></div>
+          <div class="col-xs-5 container-separated-items">
+            <div class="wrappable-content">
+              <div *ngFor="let lang of meetup.languages"><span>{{lang}}</span></div>
+            </div>
+            <div class="link">
+              <a [routerLink]="['/meetup', meetup._id]">view <small class="glyphicon glyphicon-search"></small></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h3>Next meetups</h3>
+<span *ngIf="!meetups.length">No meetups</span>
+<div class="row" [hidden]="!meetups.length">
+  <div class="col-xs-12">
+    <div class="list-group">
+      <div class="list-group-item title">
+        <div class="row">
+          <div class="col-xs-3">Owner</div>
+          <div class="col-xs-2">City</div>
+          <div class="col-xs-2">Assist</div>
+          <div class="col-xs-5">Languages</div>
+        </div>
+      </div>
+      <div class="list-group-item" *ngFor="let meetup of meetups">
+        <div class="row container-separated-items">
+          <div class="col-xs-3"><a [routerLink]="['/profile', {id: meetup.owner._id}]">{{meetup.owner.username}}</a></div>
+          <div class="col-xs-2"><span>{{meetup.city}}</span></div>
+          <div class="col-xs-2"><span>{{meetup.assist.length}}</span></div>
+          <div class="col-xs-5 container-separated-items">
+            <div class="wrappable-content">
+              <div *ngFor="let lang of meetup.languages"><span>{{lang}}</span></div>
+            </div>
+            <div class="link">
+              <a [routerLink]="['/meetup', meetup._id]">view <small class="glyphicon glyphicon-search"></small></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

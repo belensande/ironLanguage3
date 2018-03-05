@@ -1,0 +1,41 @@
+[hidden] {
+  display: none !important;
+}
+
+.container-separated-items {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.title {
+  font-weight: 700;
+}
+
+.little-profile {
+  object-fit: cover;
+  object-position: center;
+  height: 50px;
+  width: 50px;
+  border-radius: 3px;
+}
+
+.inline-content {
+  display: flex;
+  align-items: flex-end;
+}
+
+.inline-content > *:not(:first-child) {
+  margin-left: 10px;
+}
+
+.space-right {
+  margin-right: 5px;
+}
+
+.label.badge-pill {
+  border-radius: 1em;
+  margin: 0 0.25em;
+  padding: .2em .6em;
+  background-color: #337ab7;
+}

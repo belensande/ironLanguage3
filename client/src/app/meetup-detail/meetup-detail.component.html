@@ -1,0 +1,72 @@
+<div class="row">
+  <div class="container-separated-items col-sm-12">
+    <h2>Meetup</h2>
+    <a *ngIf="meetup && !assistant" class="link" href="javascript:;" (click)="assist()">assist <small class="glyphicon glyphicon-ok"></small></a>
+  </div>
+</div>
+<div class="row" *ngIf="meetup">
+  <div class="col-sm-8">
+    <div class="list-group">
+      <div class="list-group-item title">
+        Owner
+      </div>
+      <div class="list-group-item wrappable-content">
+        <h4><a [routerLink]="['/profile', {id: meetup.owner._id}]">{{meetup.owner.username}}</a></h4>
+        <span *ngFor="let lang of meetup.owner.languagesOffered">{{lang}}</span>
+      </div>
+    </div>
+    <div class="list-group">
+      <div class="list-group-item title">
+        Date
+      </div>
+      <div class="list-group-item">
+        <span>{{meetup.date | date:'yyyy-MM-dd HH:mm'}}</span>
+      </div>
+    </div>
+    <div class="list-group">
+      <div class="list-group-item title">
+        Description
+      </div>
+      <div class="list-group-item">
+        <p>{{meetup.description}}</p>
+      </div>
+    </div>
+    <div class="list-group">
+      <div class="list-group-item title">
+        Languages
+      </div>
+      <div class="list-group-item">
+        <div class="wrappable-content">
+          <div *ngIf="!meetup.languages || !meetup.languages.length">No confirmed languages</div>
+          <div *ngFor="let lang of meetup.languages"><span>{{lang}}</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="list-group">
+      <div class="list-group-item title">
+        Place
+      </div>
+      <div class="list-group-item">
+        <div *ngIf="meetup.palce"><span>{{meetup.palce}}</span></div>
+        <div class="vertical-space"><span>{{meetup.address}}</span></div>
+        <div *ngIf="meetup.location">
+          <agm-map [latitude]="meetup.location.lat" [longitude]="meetup.location.lng" [zoom]="16">
+            <agm-marker [latitude]="meetup.location.lat" [longitude]="meetup.location.lng"></agm-marker>
+          </agm-map>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="meetup" class="col-sm-4">
+    <div class="list-group">
+      <div class="list-group-item title">
+        Assistants
+      </div>
+      <div *ngIf="!meetup.assist || !meetup.assist.length" class="list-group-item">No confirmed assistants</div>
+      <div *ngFor="let assistant of meetup.assist" class="list-group-item wrappable-content">
+        <a [routerLink]="['/profile', {id: assistant._id}]">{{assistant.username}}</a>
+        <span *ngFor="let lang of assistant.languagesOffered">{{lang}}</span>
+      </div>
+    </div>
+  </div>
+</div>

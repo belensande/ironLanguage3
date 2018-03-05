@@ -1,0 +1,75 @@
+<div class="alert alert-danger" *ngIf="error">
+  {{error}}
+</div>
+<div class="row" *ngIf="user">
+  <div class="container-separated-items col-sm-12">
+    <div>
+      <h3>
+        Profile
+        <small *ngIf="currentUser._id != user._id && currentUser.relations && currentUser.relations.indexOf(user._id) != -1">(In your contact list)</small>
+        <small *ngIf="currentUser._id != user._id && currentUser.petitions.indexOf(user._id) != -1">(You have a request)</small>
+        <small *ngIf="currentUser._id != user._id && currentUser.petitions.indexOf(user._id) == -1 && currentUser.relations.indexOf(user._id) == -1 && user.petitions.indexOf(currentUser._id) != -1">(Waiting to contact)</small>
+        <small *ngIf="currentUser._id != user._id && currentUser.petitions.indexOf(user._id) == -1 && currentUser.relations.indexOf(user._id) == -1 && user.petitions.indexOf(currentUser._id) == -1">(Not related)</small>
+      </h3>
+    </div>
+    <div>
+      <a *ngIf="currentUser._id == user._id" [routerLink]="['/edit']">edit <small class="glyphicon glyphicon-pencil"></small></a>
+      <a *ngIf="currentUser._id != user._id && currentUser.relations.indexOf(user._id) != -1" [routerLink]="['/relations', user._id]">new message <small class="glyphicon glyphicon-send"></small></a>
+      <a *ngIf="currentUser._id != user._id && currentUser.petitions.indexOf(user._id) != -1" href="javascript:;" (click)="accept()">accept <small class="glyphicon glyphicon-ok"></small></a>
+      <a *ngIf="currentUser._id != user._id && currentUser.petitions.indexOf(user._id) == -1 && currentUser.relations.indexOf(user._id) == -1 && user.petitions.indexOf(currentUser._id) == -1" href="javascript:;" (click)="askContact()">contact <small class="glyphicon glyphicon-link"></small></a>
+    </div>
+  </div>
+  <div class="col-sm-4">
+    <div class="list-group">
+      <div class="list-group-item">
+        <img [src]="BASE_URL + user.imageUrl" class="little-profile" />
+        <h4>{{user.name}}</h4>
+      </div>
+    </div>
+    <ul class="list-group" *ngIf="user.languagesOffered && user.languagesOffered.length">
+      <li class="list-group-item title">Teach</li>
+      <li *ngFor="let language of user.languagesOffered" class="list-group-item">
+        {{language}}
+      </li>
+    </ul>
+    <ul class="list-group" *ngIf="user.languagesDemanded && user.languagesDemanded.length">
+      <li class="list-group-item title">Learn</li>
+      <li *ngFor="let language of user.languagesDemanded" class="list-group-item">
+        {{language}}
+      </li>
+    </ul>
+    <div class="list-group">
+      <div class="list-group-item title">
+        <span>Others</span>
+      </div>
+      <div class="list-group-item">
+        <span>{{user.city}}</span>
+      </div>
+      <div class="list-group-item">
+        <span>{{user.email}}</span>
+      </div>
+      <div *ngIf="user.gender" class="list-group-item">
+        <span>{{user.gender}}</span>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-8">
+    <div class="list-group">
+      <div class="list-group-item title">
+        <span>Description</span>
+      </div>
+      <div class="list-group-item">
+        <p>{{user.description}}</p>
+      </div>
+    </div>
+    <div class="list-group">
+      <div class="list-group-item title">
+        <span>Interests</span>
+      </div>
+      <div class="list-group-item">
+        <p>{{user.interests}}</p>
+      </div>
+    </div>
+  </div>
+</div>
+

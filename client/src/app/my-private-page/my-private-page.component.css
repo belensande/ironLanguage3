@@ -1,0 +1,28 @@
+.little-profile {
+  object-fit: cover;
+  object-position: center;
+  height: 80px;
+  width: 80px;
+  border-radius: 3px;
+}
+
+.list-group-item {
+  margin-bottom: -2px;
+}
+
+.container-separated-items {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.title {
+  font-weight: 700;
+}
+
+.label.badge-pill {
+  border-radius: 1em;
+  margin: 0 0.25em;
+  padding: .2em .6em;
+  background-color: #337ab7;
+}

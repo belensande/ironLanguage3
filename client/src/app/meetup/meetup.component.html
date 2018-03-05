@@ -1,0 +1,43 @@
+<h2>New meetup</h2>
+<div class="row">
+  <div class="col-sm-6">
+    <form>
+      <div class="form-group">
+        <label for="city" class="control-label">City</label>
+        <select class="form-control" name="city" id="city" [(ngModel)]="city">
+          <option value="">Select one city</option>
+          <option *ngFor="let city of cities" [value]="city">{{city}}</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="date">Date</label>
+        <input class="form-control" type="datetime-local" id="date" name="date" [(ngModel)]="date"
+               [min]="now | date:'yyyy-MM-ddTHH:mm'" />
+      </div>
+      <div class="form-group">
+        <label for="description" class="control-label">Description</label>
+        <textarea class="form-control" name="description" id="place" rows="5" [(ngModel)]="description"></textarea>
+      </div>
+      <div class="form-group">
+        <label for="place" class="control-label">Place</label>
+        <input type="text" id="pace" name="place" class="form-control" [(ngModel)]="place" />
+      </div>
+      <div class="form-group">
+        <label for="address" class="control-label">Address</label>
+        <input type="text" class="form-control" placeholder="Write a location" [(ngModel)]="address" id="address" name="address" #search />
+      </div>
+      <div class="form-group">
+        <label for="languages" class="control-label">Languages</label>
+        <ol class="list-group" id="languages">
+          <li *ngFor="let language of availableLanguages" class="list-group-item" [ngClass]="{'active': languages.indexOf(language) != -1 }" (click)="toogleSelectedLanguage(language)">
+            {{language}}
+          </li>
+        </ol>
+      </div>
+      <div class="alert alert-danger" *ngIf="error">
+        {{error}}
+      </div>
+      <button (click)="create()" class="btn btn-primary">Submit</button>
+    </form>
+  </div>
+</div>

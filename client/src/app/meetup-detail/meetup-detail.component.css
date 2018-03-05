@@ -1,0 +1,36 @@
+p {
+  white-space: pre-line;
+}
+
+agm-map {
+  height:300px;
+}
+
+.wrappable-content {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  white-space: nowrap;
+}
+
+.wrappable-content > * {
+  margin-right: 5px;
+}
+
+.title {
+  font-weight: 700;
+}
+
+.vertical-space {
+  margin: 10px 0;
+}
+
+.container-separated-items {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.link {
+  white-space: nowrap;
+}

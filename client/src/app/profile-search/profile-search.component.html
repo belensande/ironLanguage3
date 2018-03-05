@@ -1,0 +1,88 @@
+<div class="row" [hidden]="showForm || !totalUsers.length">
+  <div class="col-sm-12">
+    <button (click)="toggleShowForm()" class="col-xs-12 btn btn-primary">Filter</button>
+  </div>
+</div>
+<div class="row" [hidden]="!showForm || !totalUsers.length">
+  <h3 class="col-sm-12">Filters</h3>
+  <form>
+    <div class="col-sm-6">
+      <div class="form-group">
+        <label for="username" class="control-label">Username</label>
+        <input type="text" class="form-control" name="username" id="username" [(ngModel)]="userInfo.username" (keyup)="filter()"/>
+      </div>
+      <div class="form-group">
+        <label for="name" class="control-label">Name</label>
+        <input type="text" class="form-control" name="name" id="name" [(ngModel)]="userInfo.name" (keyup)="filter()"/>
+      </div>
+      <div class="form-group">
+        <label for="city" class="control-label">City</label>
+        <select class="form-control" name="city" id="city" [(ngModel)]="city" (change)="filter()">
+          <option value="">All</option>
+          <option *ngFor="let city of cities" [value]="city">{{city}}</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="gender" class="control-label">Gender</label>
+        <select class="form-control" name="gender" id="gender" [(ngModel)]="gender" (change)="filter()">
+          <option value="">All</option>
+          <option *ngFor="let gender of genders" [value]="gender">{{gender}}</option>
+        </select>
+      </div>
+    </div>
+    <div class="col-sm-6 row">
+      <div class="form-group col-sm-6">
+        <label for="languagesOffered" class="control-label">Offered languages</label>
+        <ol class="list-group" id="languagesOffered">
+          <li *ngFor="let language of languages" class="list-group-item" [ngClass]="{'active': selectedLanguage('languagesOffered', language)}" (click)="toogleSelectedLanguage('languagesOffered', language)">
+            {{language}}
+          </li>
+        </ol>
+      </div>
+      <div class="form-group col-sm-6">
+        <label for="languagesDemanded" class="control-label">Demanded languages</label>
+        <ol class="list-group" id="languagesDemanded">
+          <li *ngFor="let language of languages" class="list-group-item" [ngClass]="{'active': selectedLanguage('languagesDemanded', language)}" (click)="toogleSelectedLanguage('languagesDemanded', language)">
+            {{language}}
+          </li>
+        </ol>
+      </div>
+    </div>
+    <div class="col-sm-12">
+      <button (click)="toggleShowForm()" class="btn btn-primary">Clear</button>
+    </div>
+  </form>
+</div>
+
+<hr />
+<div class="alert alert-danger" *ngIf="error">
+  {{error}}
+</div>
+
+<div class="row" [hidden]="!users.length">
+  <div class="col-xs-12">
+    <h3>Users</h3>
+    <div class="list-group">
+      <div class="list-group-item title">
+        <div class="row">
+          <div class="col-xs-4 col-sm-2">User</div>
+          <div class="hidden-xs col-sm-4">Name</div>
+          <div class="col-xs-4 col-sm-3">Teach</div>
+          <div class="col-xs-4 col-sm-3">Learn</div>
+        </div>
+      </div>
+      <div class="list-group-item" *ngFor="let user of users">
+        <div class="row container-separated-items">
+          <div class="col-xs-4 col-sm-2"><a [routerLink]="['/profile', {id: user._id}]">{{user.username}}</a></div>
+          <div class="hidden-xs col-sm-4"><span>{{user.name}}</span></div>
+          <div class="col-xs-4 col-sm-3 wrappable-content">
+            <div *ngFor="let lang of user.languagesOffered"><span>{{lang}}</span></div>
+          </div>
+          <div class="col-xs-4 col-sm-3 wrappable-content">
+            <div *ngFor="let lang of user.languagesDemanded"><span>{{lang}}</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

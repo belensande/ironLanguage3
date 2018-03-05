@@ -1,0 +1,66 @@
+<div class="alert alert-danger" *ngIf="error">
+  {{error}}
+</div>
+<div *ngIf="currentUser" class="row">
+  <div class="col-sm-12">
+    <h3>
+      Relations
+    </h3>
+  </div>
+  <div class="col-sm-8">
+    <div class="list-group">
+      <div class="list-group-item title">
+        <span>Contacts</span>
+      </div>
+      <div *ngIf="!currentUser.relations || !currentUser.relations.length" class="list-group-item">
+        <span>No contacts found</span>
+      </div>
+      <div *ngFor="let relation of currentUser.relations" class="list-group-item">
+        <div class="row">
+          <div class="col-xs-12 container-separated-items">
+            <div class="inline-content">
+              <div>
+                <a [routerLink]="['/profile', {id: relation._id}]">
+                  <img class="little-profile" [src]="BASE_URL + relation.imageUrl" [alt]="relation.username" [title]="relation.username" />
+                </a>
+              </div>
+              <div>
+                <div>
+                  <h4><a [routerLink]="['/profile', {id: relation._id}]">{{relation.username}}</a> <small class="space-right" *ngFor="let lang of relation.languagesOffered">{{lang}}</small></h4>
+                </div>
+                <div>
+                  <small *ngIf="!messages[relation._id]">
+                    No messages
+                  </small>
+                  <small *ngIf="messages[relation._id]">
+                    {{messages[relation._id].messages[0].created | date:'medium'}}
+                  </small>
+                  <a [routerLink]="['/relations', relation._id]">
+                    <small *ngIf="messages[relation._id] && messages[relation._id].news" class="label badge-pill">{{messages[relation._id].news}}</small>
+                  </a>
+                </div>
+              </div>
+            </div>
+            <div>
+              <a [routerLink]="['/relations', relation._id]">view <small class="glyphicon glyphicon-search"></small></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-4">
+    <div class="list-group">
+      <div class="list-group-item title">
+        <span>Requests</span>
+      </div>
+      <div *ngIf="!currentUser.petitions || !currentUser.petitions.length" class="list-group-item">
+        <span>No requests found</span>
+      </div>
+      <div *ngFor="let petition of currentUser.petitions" class="list-group-item container-separated-items">
+        <h4><a [routerLink]="['/profile', {id: petition._id}]">{{petition.username}}</a> <small class="space-right" *ngFor="let lang of petition.languagesOffered">{{lang}}</small></h4>
+        <a href="javascript:;" (click)="accept()">accept <small class="glyphicon glyphicon-ok"></small></a>
+      </div>
+    </div>
+  </div>
+</div>
