@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { SessionService } from "./../services/session.service";
 import { RelationService } from "./../services/relation.service";
+import { MessageService } from "./../services/message.service";
 import { ChatService } from "./../services/chat.service";
 import { ActivatedRoute, Router } from '@angular/router';
 import * as _ from 'underscore';
@@ -11,13 +12,16 @@ import * as _ from 'underscore';
   styleUrls: ['./conversation.component.css']
 })
 export class ConversationComponent implements OnInit {
+  @ViewChild('chat') private chat: ElementRef;
   BASE_URL: string = 'http://localhost:3000';
   currentUser: any;
   contact: string;
   messages: any;
   text: string = "";
   error: string = "";
-  constructor(private route: ActivatedRoute, private session: SessionService, private relation: RelationService, private router: Router, private chatService: ChatService) { }
+  constructor(private route: ActivatedRoute, private session: SessionService,
+    private relation: RelationService, private router: Router,
+    private chatService: ChatService, private messageService: MessageService) { }
 
   ngOnInit() {
     this.session.isLogged()
@@ -26,6 +30,7 @@ export class ConversationComponent implements OnInit {
         if (!currentUser) {
           this.router.navigate(['/login']);
         } else {
+          this.currentUser = currentUser;
           this.route.params.subscribe(params => {
             if (params['id']) {
               this.contact = params['id'];
@@ -45,53 +50,43 @@ export class ConversationComponent implements OnInit {
   }
 
   loadPage() {
-    this.relation.getMessages()
+    this.messageService.getMessages(this.contact)
       .subscribe(
-      (user) => {
-        this.currentUser = user;
-        this.messages = _.filter(this.currentUser.messages, function (message: any) {
-          return message.from._id == this.contact || message.to._id == this.contact;
-        }, this);
+        (messages) => {
+          this.messages = messages;
 
-        this.messages = _.sortBy(this.messages, 'created').reverse();
+          this.messageService.chekMessages(this.contact)
+            .subscribe(
+            (result) => {},
+            (err) => {
+              this.error = err;
+            });
 
-        this.relation.chekMessages(this.contact)
-          .subscribe(
-          (user) => { this.currentUser = user; },
-          (err) => {
-            this.error = err;
-          });
+          this.chatService.deleteMessagesFrom(this.contact);
 
-        this.chatService.deleteMessagesFrom(this.contact);
-      },
-      (err) => {
-        this.error = err;
-      });
+          this.chat.nativeElement.scrollTop = 0;
+        },
+        (err) => {
+          this.error = err;
+        });
   }
 
   newMessage() {
     this.error = "";
     if (!this.text) {
       this.error = "Text is mandatory";
+    } else {
+      this.messageService.newMessage(this.contact, this.text)
+        .subscribe(
+        (result) => {
+          this.loadPage();
+          this.chatService.sendMessage({ from: this.currentUser._id, to: this.contact, text: this.text });
+          this.text = '';
+        },
+        (err) => {
+          this.error = err;
+        });
     }
-    this.relation.newMessage(this.contact, this.text)
-      .subscribe(
-      (user) => {
-        this.currentUser = user;
-
-        this.messages = _.filter(this.currentUser.messages, function (message: any) {
-          return message.from._id == this.contact || message.to._id == this.contact;
-        }, this);
-
-        this.messages = _.sortBy(this.messages, 'created').reverse();
-
-        this.chatService.sendMessage({ from: this.currentUser._id, to: this.contact, text: this.text });
-
-        this.text = '';
-      },
-      (err) => {
-        this.error = err;
-      });
   }
 
 }

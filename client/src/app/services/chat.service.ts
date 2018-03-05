@@ -1,25 +1,25 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Observable';
 import { SessionService } from "./../services/session.service";
+import { MessageService } from "./../services/message.service";
 import * as io from 'socket.io-client';
 import * as _ from 'underscore';
 
 @Injectable()
-export class ChatService implements OnDestroy{
+export class ChatService {
   private url = 'http://localhost:3000';
   private socket;
   private messages: any[];
   public messagesSubject = new Subject();
 
-  constructor(private sessionService: SessionService) {
+  constructor(private sessionService: SessionService, private messageService: MessageService) {
     this.sessionService.isLogged().subscribe(
       (user) => {
         if (user) {
           this.connect(user._id);
         }
-      }
-    );
+      });
   }
 
   sendMessage(message) {
@@ -36,22 +36,28 @@ export class ChatService implements OnDestroy{
   connect(id) {
     if (!this.socket) {
       this.socket = io(this.url, { query: "id=" + id });
-      this.socket.on('connect', () => this.messages = []);
+      this.socket.on('connect', () => {
+        this.messageService.getNews().subscribe(
+          (messages: any[]) => {
+            this.messages = messages || [];
+            this.messagesSubject.next(this.messages);
+          },
+          (err) => {
+            this.messages = [];
+          });
+      });
       this.socket.on('message', (msg) => {
         this.messages.push(msg);
         this.messagesSubject.next(this.messages);
       });
-      this.socket.on('disconnect', () => delete this.messages);
+    } else {
+      this.socket.connect();
     }
   }
 
   disconnect() {
     if (this.socket) {
-      this.socket.disconnect();
+      this.socket.io.disconnect();
     }
-  }
-
-  ngOnDestroy() {
-    this.disconnect();
   }
 }

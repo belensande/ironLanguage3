@@ -9,6 +9,7 @@ import { ConversationComponent } from './conversation/conversation.component';
 import { MeetupComponent } from './meetup/meetup.component';
 import { MeetupListComponent } from './meetup-list/meetup-list.component';
 import { MeetupDetailComponent } from './meetup-detail/meetup-detail.component'
+import { MeetupChatComponent } from './meetup-chat/meetup-chat.component'
 
 export const routes: Routes = [
   { path: 'profile', component: ProfileComponent },
@@ -22,5 +23,6 @@ export const routes: Routes = [
   { path: 'meetup/new', component: MeetupComponent },
   { path: 'meetup/list', component: MeetupListComponent },
   { path: 'meetup/:id', component: MeetupDetailComponent },
+  { path: 'meetup-chat/:id', component: MeetupChatComponent },
   { path: '**', redirectTo: 'private' }
 ];

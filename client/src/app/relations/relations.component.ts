@@ -28,9 +28,7 @@ export class RelationsComponent implements OnInit {
           this.loadPage();
           this.chatService.messagesSubject.subscribe(
             (messages: any[]) => {
-              if (messages && messages.length) {
-                this.loadPage();
-              }
+              this.loadPage();
             });
         }
       });
@@ -41,28 +39,18 @@ export class RelationsComponent implements OnInit {
       (user) => {
         this.currentUser = user;
 
-        this.messages = _.groupBy(user.messages, function (message: any) {
-          return message.from != this.currentUser._id ? message.from : message.to;
-        }, this);
-
-        this.messages = _.mapObject(this.messages, function (list: any[], key) {
-          let news = _.reduce(list, function (news, msg) {
-            if (!msg.checked && msg.to == this.currentUser._id) { return ++news; }
-            return news;
-          }, 0, this);
-          return { 'messages': list, 'news': news }
-        }, this);
-
-        this.currentUser.relations = _.sortBy(this.currentUser.relations, function (a: any, b: any) {
-          let aDate = this.messages[a] ? this.messages[a][0].created : 0;
-          let bDate = this.messages[b] ? this.messages[b][0].created : 0;
-          return (aDate || bDate) ? (!aDate ? 1 : !bDate ? -1 : bDate - aDate) : a.username - b.username;
-        }, this);
-
+        this.currentUser.relations = _.chain(this.currentUser.relations)
+          .sortBy("contact.username")
+          .sortBy(function (rel) {
+            return rel.lastMessage ? - new Date(rel.lastMessage).getTime() : 0;
+          }).value();
       },
       (err) => {
         this.error = err;
       });
   }
 
+  accept(id) {
+
+  }
 }

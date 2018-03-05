@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { SessionService } from "./../services/session.service";
 import { MeetupService } from "./../services/meetup.service";
 import { RelationService } from "./../services/relation.service";
+import { MessageService } from "./../services/message.service";
 import { ChatService } from "./../services/chat.service";
 import { Router } from '@angular/router';
 import * as _ from 'underscore';
@@ -23,7 +24,8 @@ export class MyPrivatePageComponent implements OnInit {
   error: string;
 
   constructor(private session: SessionService, private meetup: MeetupService,
-    private relation: RelationService, private chatService: ChatService, private router: Router) { }
+    private relation: RelationService, private chatService: ChatService,
+    private messageService: MessageService, private router: Router) { }
 
   ngOnInit() {
     this.session.isLogged()
@@ -47,34 +49,30 @@ export class MyPrivatePageComponent implements OnInit {
               this.ownMeetups = meetups ? meetups.length : 0;
             });
 
+          this.relation.getRelations().subscribe(
+            (user) => {
+              this.currentUser = user;
+              this.petitions = user.petitions ? user.petitions.length : 0;
+              this.relations = user.relations ? user.relations.length : 0;
+            },
+            (err) => {
+              this.error = err;
+            });
+
           this.loadMessages();
+
           this.chatService.messagesSubject.subscribe(
             (messages: any[]) => {
-              if (messages && messages.length) {
-                this.loadMessages();
-              }
+              this.loadMessages();
             });
         }
       });
   }
 
   loadMessages() {
-    this.relation.getRelations().subscribe(
-      (user) => {
-        this.currentUser = user;
-        this.petitions = user.petitions ? user.petitions.length : 0;
-        this.relations = user.relations ? user.relations.length : 0;
-
-        if (user.messages) {
-          this.newMessages = _.reduce(user.messages, function (news, msg: any) {
-            if (!msg.checked && msg.to == this.currentUser._id) {
-              return ++news;
-            }
-            return news;
-          }, 0, this);
-        } else {
-          this.newMessages = 0;
-        }
+    this.messageService.getNews().subscribe(
+      (messages) => {
+        this.newMessages = messages ? messages.length : 0;
       },
       (err) => {
         this.error = err;

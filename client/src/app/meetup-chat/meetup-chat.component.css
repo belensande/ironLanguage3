@@ -1,0 +1,90 @@
+.writer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding-bottom: 10px;
+  z-index: 1000;
+  background-color: #f8f8f8;
+  border-top: solid 1px #ddd;
+  padding-top: 20px;
+}
+
+.writer .form-group {
+	margin-bottom: 10px;
+}
+
+.chat {
+  margin-bottom: 95px;
+  overflow-y: scroll;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  left: 0;
+  top: 50px;
+  padding-top: 20px;
+}
+
+.right {
+  flex-direction:row-reverse;
+}
+
+.little-profile {
+  object-fit: cover;
+  object-position: center;
+  height: 50px;
+  width: 50px;
+  border-radius: 3px;
+}
+
+.space-right:not(:last-child) {
+  margin-right: 5px;
+}
+
+.right .space-right {
+  margin-right: 0;
+  margin-left: 5px;
+}
+
+.wrappable {
+  display:flex;
+  flex-wrap:wrap;
+}
+
+.right .wrappable {
+  justify-content: flex-end;
+}
+
+p {
+  white-space: pre-line;
+}
+
+.text-rigth {
+  text-align:right;
+}
+
+.flex {
+  display:flex;
+  align-items:stretch;
+  padding-left:0;
+}
+.flex {
+  display: flex;
+  align-items: stretch;
+}
+
+.flex > div{
+  flex-grow:1;
+  
+}
+
+.flex > div:not(.list-group-item) {
+  padding-right: 0;
+  padding-left: 15px;
+}
+
+.active small {
+  color: white;
+  font-style: italic;
+}
+

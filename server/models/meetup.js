@@ -35,7 +35,22 @@ const meetupSchema = new Schema({
 	assist: {
 		type: [Schema.Types.ObjectId],
 		ref: 'User'
-	}
+	},
+	messages: [{
+		from: {
+			type: Schema.Types.ObjectId,
+			ref: 'User',
+			required: [true, 'Sender is mandatory.']
+		},
+		text: {
+			type: String,
+			required: [true, 'Text is mandatory.']
+		},
+		created: {
+			type: Date,
+			default: () => new Date()
+		}
+	}]
 }, {
 	timestamps: { createdAt: "created_at", updatedAt: "updated_at" }
 });

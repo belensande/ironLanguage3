@@ -2,6 +2,7 @@
   <div class="container-separated-items col-sm-12">
     <h2>Meetup</h2>
     <a *ngIf="meetup && !assistant" class="link" href="javascript:;" (click)="assist()">assist <small class="glyphicon glyphicon-ok"></small></a>
+    <a *ngIf="meetup && assistant" class="link" [routerLink]="['/meetup-chat', meetup._id]">chat <small class="glyphicon glyphicon-send"></small></a>
   </div>
 </div>
 <div class="row" *ngIf="meetup">

@@ -25,15 +25,15 @@ const userSchema = new Schema({
 	city: {
 		type: String,
 		enum: ['Madrid', 'Barcelona', 'Other'],
-        default: 'Other'
+		default: 'Other'
 	},
 	languagesOffered: {
 		type: [String],
-		enum: ["English", "French", "Spanish", "German"]	
+		enum: ["English", "French", "Spanish", "German"]
 	},
 	languagesDemanded: {
 		type: [String],
-		enum: ["English", "French", "Spanish", "German"]	
+		enum: ["English", "French", "Spanish", "German"]
 	},
 	gender: {
 		type: String,
@@ -48,34 +48,27 @@ const userSchema = new Schema({
 		type: String,
 		default: '/images/profiles/noimage.jpg'
 	},
-	relations: {
-		type: [Schema.Types.ObjectId],
-		ref: 'User'
-	},
-	petitions: {
-		type: [Schema.Types.ObjectId],
-		ref: 'User'
-	},
-	messages: [{
-		from: {
-			type: Schema.Types.ObjectId,	
-			ref: 'User'
+	relations: [{
+		contact: {
+			type: Schema.Types.ObjectId,
+			ref: 'User',
+			required: [true, 'User is mandatory.']
 		},
-		to: {
-			type: Schema.Types.ObjectId,	
-			ref: 'User'
-		},
-		text: {
-			type: String,
-			required: [true, 'Text is mandatory.']
+		lastMessage: Date,
+		unchecked: {
+			type: Number,
+			default: 0
+		}
+	}],
+	petitions: [{
+		contact: {
+			type: Schema.Types.ObjectId,
+			ref: 'User',
+			required: [true, 'User is mandatory.']
 		},
 		created: {
 			type: Date,
 			default: () => new Date()
-		},
-		checked: {
-			type: Boolean,
-			default: false
 		}
 	}]
 }, {

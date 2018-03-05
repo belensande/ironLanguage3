@@ -2,7 +2,7 @@
   {{error}}
 </div>
 
-<div class="row" [hidden]="!assistMeetups.length">
+<div class="row" *ngIf="assistMeetups && assistMeetups.length">
   <div class="col-xs-12">
     <h3>Assist</h3>
     <div class="list-group">
@@ -35,7 +35,7 @@
 
 <h3>Next meetups</h3>
 <span *ngIf="!meetups.length">No meetups</span>
-<div class="row" [hidden]="!meetups.length">
+<div class="row" *ngIf="meetups && meetups.length">
   <div class="col-xs-12">
     <div class="list-group">
       <div class="list-group-item title">

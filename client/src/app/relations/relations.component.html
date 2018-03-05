@@ -20,29 +20,29 @@
           <div class="col-xs-12 container-separated-items">
             <div class="inline-content">
               <div>
-                <a [routerLink]="['/profile', {id: relation._id}]">
-                  <img class="little-profile" [src]="BASE_URL + relation.imageUrl" [alt]="relation.username" [title]="relation.username" />
+                <a [routerLink]="['/profile', {id: relation.contact._id}]">
+                  <img class="little-profile" [src]="BASE_URL + relation.contact.imageUrl" [alt]="relation.contact.username" [title]="relation.contact.username" />
                 </a>
               </div>
               <div>
                 <div>
-                  <h4><a [routerLink]="['/profile', {id: relation._id}]">{{relation.username}}</a> <small class="space-right" *ngFor="let lang of relation.languagesOffered">{{lang}}</small></h4>
+                  <h4><a [routerLink]="['/profile', {id: relation.contact._id}]">{{relation.contact.username}}</a> <small class="space-right" *ngFor="let lang of relation.contact.languagesOffered">{{lang}}</small></h4>
                 </div>
                 <div>
-                  <small *ngIf="!messages[relation._id]">
+                  <small *ngIf="!relation.lastMessage">
                     No messages
                   </small>
-                  <small *ngIf="messages[relation._id]">
-                    {{messages[relation._id].messages[0].created | date:'medium'}}
+                  <small *ngIf="relation.lastMessage">
+                    {{relation.lastMessage | date:'medium'}}
                   </small>
-                  <a [routerLink]="['/relations', relation._id]">
-                    <small *ngIf="messages[relation._id] && messages[relation._id].news" class="label badge-pill">{{messages[relation._id].news}}</small>
+                  <a [routerLink]="['/relations', relation.contact._id]">
+                    <small *ngIf="relation.unchecked" class="label badge-pill">{{relation.unchecked}}</small>
                   </a>
                 </div>
               </div>
             </div>
             <div>
-              <a [routerLink]="['/relations', relation._id]">view <small class="glyphicon glyphicon-search"></small></a>
+              <a [routerLink]="['/relations', relation.contact._id]">view <small class="glyphicon glyphicon-search"></small></a>
             </div>
           </div>
         </div>
@@ -58,8 +58,8 @@
         <span>No requests found</span>
       </div>
       <div *ngFor="let petition of currentUser.petitions" class="list-group-item container-separated-items">
-        <h4><a [routerLink]="['/profile', {id: petition._id}]">{{petition.username}}</a> <small class="space-right" *ngFor="let lang of petition.languagesOffered">{{lang}}</small></h4>
-        <a href="javascript:;" (click)="accept()">accept <small class="glyphicon glyphicon-ok"></small></a>
+        <h4><a [routerLink]="['/profile', {id: petition.contact._id}]">{{petition.contact.username}}</a> <small class="space-right" *ngFor="let lang of petition.contact.languagesOffered">{{lang}}</small></h4>
+        <a href="javascript:;" (click)="accept(petition.contact._id)">accept <small class="glyphicon glyphicon-ok"></small></a>
       </div>
     </div>
   </div>

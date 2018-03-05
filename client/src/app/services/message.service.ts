@@ -10,28 +10,34 @@ let headers = new Headers({ 'Content-Type': 'application/json' });
 let options = new RequestOptions({ headers: headers, withCredentials: true });
 
 @Injectable()
-export class RelationService {
-  BASE_URL: string = 'http://localhost:3000/api/relations';
+export class MessageService {
+  BASE_URL: string = 'http://localhost:3000/api/messages';
   constructor(private http: Http) { }
 
   handleError(e) {
     return Observable.throw(e.json().message);
   }
 
-  accept(id) {
-    return this.http.post(`${this.BASE_URL}/accept`, { 'id': id }, options)
+  getMessages(id) {
+    return this.http.get(`${this.BASE_URL}/${id}`, options)
       .map(res => res.json())
       .catch(this.handleError);
   }
 
-  askContact(id) {
-    return this.http.post(`${this.BASE_URL}/ask`, { 'id': id }, options)
+  chekMessages(id) {
+    return this.http.post(`${this.BASE_URL}/check`, { 'contact': id }, options)
       .map(res => res.json())
       .catch(this.handleError);
   }
 
-  getRelations() {
-    return this.http.get(`${this.BASE_URL}/`, options)
+  newMessage(id, text) {
+    return this.http.post(`${this.BASE_URL}/${id}`, { 'text': text }, options)
+      .map(res => res.json())
+      .catch(this.handleError);
+  }
+
+  getNews() {
+    return this.http.get(`${this.BASE_URL}/news`, options)
       .map(res => res.json())
       .catch(this.handleError);
   }

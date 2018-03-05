@@ -1,7 +1,7 @@
 <h2>New meetup</h2>
 <div class="row">
   <div class="col-sm-6">
-    <form>
+    <div class="form">
       <div class="form-group">
         <label for="city" class="control-label">City</label>
         <select class="form-control" name="city" id="city" [(ngModel)]="city">
@@ -38,6 +38,6 @@
         {{error}}
       </div>
       <button (click)="create()" class="btn btn-primary">Submit</button>
-    </form>
+    </div>
   </div>
 </div>
