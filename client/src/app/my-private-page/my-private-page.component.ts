@@ -17,7 +17,7 @@ export class MyPrivatePageComponent implements OnInit {
   currentUser: any;
   meetups: Number;
   assistMeetups: Number;
-  newMessages: Number;
+  newMessages: Number = 0;
   ownMeetups: Number;
   petitions: Number;
   relations: Number;
@@ -34,6 +34,11 @@ export class MyPrivatePageComponent implements OnInit {
         if (!user) {
           this.router.navigate(['/login']);
         } else {
+          this.chatService.newsSubject.subscribe(
+            (news: number) => {
+              this.newMessages = news || 0;
+            });
+
           this.meetup.get(user.city)
             .subscribe(meetups => {
               this.meetups = meetups ? meetups.length : 0;
@@ -58,24 +63,7 @@ export class MyPrivatePageComponent implements OnInit {
             (err) => {
               this.error = err;
             });
-
-          this.loadMessages();
-
-          this.chatService.messagesSubject.subscribe(
-            (messages: any[]) => {
-              this.loadMessages();
-            });
         }
-      });
-  }
-
-  loadMessages() {
-    this.messageService.getNews().subscribe(
-      (messages) => {
-        this.newMessages = messages ? messages.length : 0;
-      },
-      (err) => {
-        this.error = err;
       });
   }
 }

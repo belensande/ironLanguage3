@@ -29,7 +29,7 @@
           </div>
         </div>
         <div class="col-xs-12 col-sm-10 flex" [ngClass]="{'text-right': msg.from._id == currentUser._id}">
-          <div class="list-group-item">
+          <div class="list-group-item" [ngClass]="{'active': msg.from._id != currentUser._id && msg.new}">
             <h5 class="visible-xs"><a [routerLink]="['/profile', {id: msg.from._id}]">{{msg.from.username}}</a> <small class="space-right" *ngFor="let lang of msg.from.languagesOffered">{{lang}}</small></h5>
             <p>{{msg.text}}</p>
             <h5><small>{{msg.created | date:'medium'}}</small></h5>

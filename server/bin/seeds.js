@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt");
 const bcryptSalt = 10;
 const User = require('../models/user');
 const Message = require('../models/message');
+const Meetup = require('../models/meetup');
 
 mongoose.connect("mongodb://localhost:27017/iron-language");
 var salt = bcrypt.genSaltSync(bcryptSalt);
@@ -53,6 +54,7 @@ let user2 = new User({
 
 User.collection.drop();
 Message.collection.drop();
+Meetup.collection.drop();
 
 admin.save()
 .then(user => {

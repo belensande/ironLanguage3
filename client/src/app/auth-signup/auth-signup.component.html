@@ -2,7 +2,7 @@
 <h2 *ngIf="isEdit">Edit</h2>
 <div class="row">
   <div class="col-sm-6">
-    <form>
+    <div class="form">
       <div class="form-group">
         <label for="username" class="control-label">Username</label>
         <input type="text" class="form-control" name="username" id="username" required [(ngModel)]="formInfo.username" />
@@ -73,6 +73,6 @@
         Already have an account? <a [routerLink]="['/login']">Log in</a>
       </p>
       <br />
-    </form>
+    </div>
   </div>
 </div>

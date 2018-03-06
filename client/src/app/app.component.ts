@@ -32,9 +32,10 @@ export class AppComponent implements OnInit {
           if (user) {
             this.userLogged = true;
             this.id = user._id;
-            this.chatService.messagesSubject.subscribe(
-              (messages: any[]) => {
-                messages ? this.newMessages = messages.length : 0;
+            this.chatService.newsSubject.subscribe(
+              (news: number) => {
+                console.log("news subscription from navbar updated");
+                this.newMessages = news || 0;
               });
           } else {
             this.userLogged = false;

@@ -34,12 +34,43 @@ export class ConversationComponent implements OnInit {
           this.route.params.subscribe(params => {
             if (params['id']) {
               this.contact = params['id'];
-              this.loadPage();
-              this.chatService.messagesSubject.subscribe(
-                (messages: any[]) => {
-                  if (messages && messages.length && _.findWhere(messages, { from: this.contact }) !== undefined) {
-                    this.loadPage();
-                  }
+              this.messageService.getMessages(this.contact)
+                .subscribe(
+                (messages) => {
+                  this.messages = messages;
+
+                  this.messageService.chekMessages(this.contact)
+                    .subscribe(
+                    (user) => {
+                      this.currentUser = user;
+                      this.chatService.deleteMessagesFrom(this.contact);
+                    },
+                    (err) => {
+                      this.error = err;
+                    });
+
+                  this.chatService.messagesSubject.subscribe(
+                    (message: any) => {
+                      if (message && message.from._id == this.contact) {
+                        this.messageService.chekMessages(this.contact)
+                          .subscribe(
+                          (user) => {
+                            this.currentUser = user;
+                            this.chatService.deleteMessagesFrom(this.contact);
+                            this.messages = _.map(this.messages, (msg: any) => {
+                              msg.checked = true;
+                              return msg;
+                            });
+                            this.messages.unshift(message);
+                          },
+                          (err) => {
+                            this.error = err;
+                          });
+                      }
+                    });
+                },
+                (err) => {
+                  this.error = err;
                 });
             } else {
               this.error = "No relation provided";
@@ -49,28 +80,6 @@ export class ConversationComponent implements OnInit {
       });
   }
 
-  loadPage() {
-    this.messageService.getMessages(this.contact)
-      .subscribe(
-        (messages) => {
-          this.messages = messages;
-
-          this.messageService.chekMessages(this.contact)
-            .subscribe(
-            (result) => {},
-            (err) => {
-              this.error = err;
-            });
-
-          this.chatService.deleteMessagesFrom(this.contact);
-
-          this.chat.nativeElement.scrollTop = 0;
-        },
-        (err) => {
-          this.error = err;
-        });
-  }
-
   newMessage() {
     this.error = "";
     if (!this.text) {
@@ -78,10 +87,11 @@ export class ConversationComponent implements OnInit {
     } else {
       this.messageService.newMessage(this.contact, this.text)
         .subscribe(
-        (result) => {
-          this.loadPage();
-          this.chatService.sendMessage({ from: this.currentUser._id, to: this.contact, text: this.text });
+        (message) => {
+          this.messages.unshift(message);
+          this.chatService.sendMessage(message);
           this.text = '';
+          this.chat.nativeElement.scrollTop = 0;
         },
         (err) => {
           this.error = err;

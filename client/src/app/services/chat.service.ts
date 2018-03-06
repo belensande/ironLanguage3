@@ -11,7 +11,9 @@ export class ChatService {
   private url = 'http://localhost:3000';
   private socket;
   private messages: any[];
-  public messagesSubject = new Subject();
+  public messagesSubject: Subject<any>;
+  public newsSubject: Subject<number>;
+  public chatSubject: Subject<any>;
 
   constructor(private sessionService: SessionService, private messageService: MessageService) {
     this.sessionService.isLogged().subscribe(
@@ -27,28 +29,48 @@ export class ChatService {
   }
 
   deleteMessagesFrom(id) {
-    this.messages = _.difference(this.messages, _.where(this.messages, {
-      from: id
-    }));
-    this.messagesSubject.next(this.messages);
+    this.messages = _.filter(this.messages, (msg: any) => { return msg.from._id != id });
+    this.newsSubject.next(this.messages.length);
+  }
+
+  updateChat(message) {
+    this.socket.emit('sendchat', message);
+  }
+
+  joinChat(meetupId) {
+    this.socket.emit('adduser', meetupId);
+  }
+
+  leaveChat() {
+    this.socket.emit('leavechat');
   }
 
   connect(id) {
+    this.messagesSubject = new Subject();
+    this.newsSubject = new Subject();
+    this.chatSubject = new Subject();
     if (!this.socket) {
       this.socket = io(this.url, { query: "id=" + id });
+
       this.socket.on('connect', () => {
         this.messageService.getNews().subscribe(
           (messages: any[]) => {
             this.messages = messages || [];
-            this.messagesSubject.next(this.messages);
+            this.newsSubject.next(this.messages.length);
           },
           (err) => {
             this.messages = [];
           });
       });
+
       this.socket.on('message', (msg) => {
         this.messages.push(msg);
-        this.messagesSubject.next(this.messages);
+        this.messagesSubject.next(msg);
+        this.newsSubject.next(this.messages.length);
+      });
+
+      this.socket.on('updatechat', (message) => {
+        this.chatSubject.next(message);
       });
     } else {
       this.socket.connect();

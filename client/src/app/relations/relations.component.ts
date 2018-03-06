@@ -25,32 +25,42 @@ export class RelationsComponent implements OnInit {
         if (!currentUser) {
           this.router.navigate(['/login']);
         } else {
-          this.loadPage();
-          this.chatService.messagesSubject.subscribe(
-            (messages: any[]) => {
-              this.loadPage();
+          this.relation.getRelations().subscribe(
+            (user) => {
+              this.currentUser = user;
+
+              this.currentUser.relations = _.chain(this.currentUser.relations)
+                .sortBy("contact.username")
+                .sortBy(function (rel) {
+                  return rel.lastMessage ? - new Date(rel.lastMessage).getTime() : 0;
+                }).value();
+
+              this.chatService.messagesSubject.subscribe(
+                (message: any) => {
+                  this.currentUser.relations = _.map(this.currentUser.relations, rel => {
+                    if (rel['_id'] == message.from._id) {
+                      return _.extend(rel, { lastMessage: message.created_at, unchecked: rel['unchecked'] + 1 });
+                    } else {
+                      return rel;
+                    }
+                  })
+                });
+            },
+            (err) => {
+              this.error = err;
             });
         }
       });
   }
 
-  loadPage() {
-    this.relation.getRelations().subscribe(
+  accept(id) {
+    this.relation.accept(id)
+      .subscribe(
       (user) => {
         this.currentUser = user;
-
-        this.currentUser.relations = _.chain(this.currentUser.relations)
-          .sortBy("contact.username")
-          .sortBy(function (rel) {
-            return rel.lastMessage ? - new Date(rel.lastMessage).getTime() : 0;
-          }).value();
       },
       (err) => {
         this.error = err;
       });
-  }
-
-  accept(id) {
-
   }
 }

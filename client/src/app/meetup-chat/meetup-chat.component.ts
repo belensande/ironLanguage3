@@ -1,7 +1,8 @@
-import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, ElementRef, ViewChild } from '@angular/core';
 import { SessionService } from "./../services/session.service";
 import { MeetupService } from "./../services/meetup.service";
 import { ActivatedRoute, Router } from '@angular/router';
+import { ChatService } from "./../services/chat.service";
 import * as _ from 'underscore';
 
 @Component({
@@ -9,16 +10,16 @@ import * as _ from 'underscore';
   templateUrl: './meetup-chat.component.html',
   styleUrls: ['./meetup-chat.component.css']
 })
-export class MeetupChatComponent implements OnInit {
+export class MeetupChatComponent implements OnInit, OnDestroy {
   @ViewChild('chat') private chat: ElementRef;
-  BASE_URL: string = 'http://localhost:3000';
+  BASE_URL: String = 'http://localhost:3000';
   currentUser: any;
   id: string;
   messages: any;
   text: string = "";
   error: string = "";
   constructor(private session: SessionService, private router: Router,
-    private meetupService: MeetupService, private route: ActivatedRoute) { }
+    private meetupService: MeetupService, private route: ActivatedRoute, private chatService: ChatService) { }
 
   ngOnInit() {
     this.session.isLogged()
@@ -35,6 +36,15 @@ export class MeetupChatComponent implements OnInit {
                 .subscribe(
                 (meetup) => {
                   this.messages = _.sortBy(meetup.messages, 'created').reverse();
+                  this.chatService.joinChat(this.id);
+                  this.chatService.chatSubject.subscribe(
+                    (message: any) => {
+                      if (message.from._id != this.currentUser._id) {
+                        message['new'] = true;
+                      this.messages.unshift(message);
+                      this.chat.nativeElement.scrollTop = 0;
+                      }
+                    });
                 },
                 (err) => {
                   this.error = err;
@@ -56,6 +66,11 @@ export class MeetupChatComponent implements OnInit {
         .subscribe(
         (meetup) => {
           this.messages = _.sortBy(meetup.messages, 'created').reverse();
+          this.chatService.updateChat(this.messages[0]);
+          this.messages = _.map(this.messages, (msg) => {
+            delete msg['new'];
+            return msg;
+          });
           this.text = '';
           this.chat.nativeElement.scrollTop = 0;
         },
@@ -65,4 +80,7 @@ export class MeetupChatComponent implements OnInit {
     }
   }
 
+  ngOnDestroy() {
+    this.chatService.leaveChat();
+  }
 }

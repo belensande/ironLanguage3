@@ -6,14 +6,30 @@ module.exports = (io) => {
 
 		sockets[id] = socket;
 
-		socket.on('disconnect', function () {
+		socket.on('disconnect', () => {
 			delete sockets[id];
+			if (socket.room) {
+				socket.leave(socket.room);
+			}
 		});
 
 		socket.on('add-message', msg => {
-			if (sockets[msg.to]) {
-				sockets[msg.to].emit('message', msg);
+			if (sockets[msg.to._id]) {
+				sockets[msg.to._id].emit('message', msg);
 			}
-		})
+		});
+
+		socket.on('adduser', (meetupId) => {
+			socket.room = meetupId;
+			socket.join(meetupId);
+		});
+
+		socket.on('sendchat', (message) => {
+			io.sockets.in(socket.room).emit('updatechat', message);
+		});
+
+		socket.on('leavechat', () => {
+			socket.leave(socket.room);
+		});
 	});
 }

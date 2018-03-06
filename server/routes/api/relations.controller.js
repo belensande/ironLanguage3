@@ -19,14 +19,14 @@ router.get('/', function (req, res, next) {
 });
 
 router.post('/accept', function (req, res, next) {
-	User.update({ _id: req.user._id }, { $pull: { petitions: { contact: req.body.id } }, $addToSet: { relations: { contact: req.body.id } } }, { new: true })
-		.populate({ path: 'relations.contact petitions.contact', model: 'User' })
-		.exec()
+	User.findByIdAndUpdate(req.body.id, { $addToSet: { relations: { contact: req.user._id } } })
+		.then(user => {
+			return User.findByIdAndUpdate(req.user._id, { $pull: { petitions: { contact: req.body.id } }, $addToSet: { relations: { contact: req.body.id } } }, { new: true })
+				.populate({ path: 'relations.contact petitions.contact', model: 'User' })
+				.exec();
+		})
 		.then(user => {
 			req.user = user;
-			return User.update({ _id: req.body.id }, { $addToSet: { relations: { contact: req.bouserdy._id } } });
-		})
-		.then(result => {
 			return res.status(200).json(req.user);
 		})
 		.catch(err => {
