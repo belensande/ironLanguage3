@@ -46,7 +46,7 @@ const userSchema = new Schema({
 	},
 	imageUrl: {
 		type: String,
-		default: '/images/profiles/noimage.jpg'
+		default: 'https://res.cloudinary.com/hbuvh6zav/image/upload/v1520410160/noimage.jpg'
 	},
 	relations: [{
 		contact: {

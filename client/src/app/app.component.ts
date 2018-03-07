@@ -18,6 +18,17 @@ export class AppComponent implements OnInit {
   id: string = "";
 
   ngOnInit() {
+    this.sessionService.isLogged()
+      .subscribe(
+      (user) => {
+        if (user) {
+          this.messageService.getNews().subscribe(
+            (messages) => {
+              this.chatService.manageNews(messages);
+            });
+        }
+      });
+
     this.router.events.subscribe((e: any) => {
       if (e instanceof NavigationEnd) {
         this.initialise();
@@ -32,10 +43,6 @@ export class AppComponent implements OnInit {
           if (user) {
             this.userLogged = true;
             this.id = user._id;
-            this.messageService.getNews().subscribe(
-              (messages) => {
-                this.chatService.manageNews(messages);
-              });
           } else {
             this.userLogged = false;
             this.id = "";

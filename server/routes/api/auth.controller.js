@@ -5,6 +5,7 @@ const bcrypt         = require("bcrypt");
 const multer		 = require('multer');
 const User			 = require("../../models/user");
 const validation	 = require("../../middleware/validationBeforeUpload");
+const cloudinary	 = require("cloudinary");
 
 let upload = multer({
 	dest: './public/images/profiles',
@@ -25,18 +26,8 @@ let loginPromise = (req, user) => {
 
 router.post("/signup", upload.single('file'), (req, res, next) => {
 
-	if (!req.file) {
-		let message = validation(req);
-		if (message) {
-			return res.status(500).json({ message });
-		}
-	}
-
-	let hashPass = bcrypt.hashSync(req.body.password, 10);
-
 	let userInfo = {
 		username: req.body.username,
-		password: hashPass,
 		email: req.body.email,
 		name: req.body.name,
 		gender: req.body.gender,
@@ -45,26 +36,44 @@ router.post("/signup", upload.single('file'), (req, res, next) => {
 		interests: req.body.interests
 	};
 
-	if (req.body.languagesOffered) {
-		userInfo["languagesOffered"]= JSON.parse(req.body.languagesOffered);
-	}
-
-	if (req.body.languagesDemanded) {
-		userInfo["languagesDemanded"] = JSON.parse(req.body.languagesDemanded);
-	}
-
-	if (req.file) {
-		userInfo["imageUrl"] = `/images/profiles/${req.file.filename}`;
-	}
-
-	let newUser = User(userInfo);
-
-	return newUser.save()
-		.then(user => loginPromise(req, user))
-		.then(user => res.status(200).json(req.user))
-		.catch(e => {
-			return res.status(500).json(e);
+	if (!req.file) {
+		let message = validation(req);
+		if (message) {
+			return res.status(500).json({ message });
+		}
+		afterUpload();
+	} else {
+		cloudinary.v2.uploader.upload(req.file.path, function (error, result) {
+			if (error || !result) {
+				return res.status(500).json({ message: "Somethihg went wrong" });
+			}
+			userInfo["imageUrl"] = result.secure_url;
+			afterUpload();
 		});
+	}
+
+	const afterUpload = () => {
+		let hashPass = bcrypt.hashSync(req.body.password, 10);
+
+		userInfo["password"] = hashPass;
+
+		if (req.body.languagesOffered) {
+			userInfo["languagesOffered"] = JSON.parse(req.body.languagesOffered);
+		}
+
+		if (req.body.languagesDemanded) {
+			userInfo["languagesDemanded"] = JSON.parse(req.body.languagesDemanded);
+		}
+
+		let newUser = User(userInfo);
+
+		return newUser.save()
+			.then(user => loginPromise(req, user))
+			.then(user => res.status(200).json(req.user))
+			.catch(e => {
+				return res.status(500).json({ message: 'Something went wrong' });
+			});
+	}
 				 
 });
 

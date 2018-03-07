@@ -5,6 +5,7 @@ const bcrypt         = require("bcrypt");
 const multer		 = require('multer');
 const User			 = require("../../models/user");
 const validation	 = require("../../middleware/validationBeforeUpload");
+const cloudinary	 = require("cloudinary");
 
 let upload = multer({
 	dest: './public/images/profiles',
@@ -22,19 +23,8 @@ let upload = multer({
 
 router.post("/", upload.single('file'), (req, res, next) => {
 
-	if (!req.file) {
-		if (!req.user) {
-			return cb(new Error("Not logged"), false);
-		}
-		let message = validation(req);
-		if (message) {
-			return res.status(500).json({ message });
-		}
-	}
-
 	let userInfo = {
 		username: req.body.username,
-		password: req.body.password,
 		email: req.body.email,
 		name: req.body.name,
 		gender: req.body.gender,
@@ -43,35 +33,52 @@ router.post("/", upload.single('file'), (req, res, next) => {
 		interests: req.body.interests
 	};
 
-	if (req.body.password != req.user.password) {
-		const salt = bcrypt.genSaltSync(10);
-		const hashPass = bcrypt.hashSync(userInfo.password, salt);
-
-		userInfo["password"] = hashPass;
-	}
-
-	if (req.body.languagesOffered) {
-		userInfo["languagesOffered"] = JSON.parse(req.body.languagesOffered);
-	}
-
-	if (req.body.languagesDemanded) {
-		userInfo["languagesDemanded"] = JSON.parse(req.body.languagesDemanded);
-	}
-
-	if (req.file) {
-		userInfo["imageUrl"] = `/images/profiles/${req.file.filename}`;
-	}
-
-	User.findByIdAndUpdate(req.user.id, { $set: userInfo }, { new: true })
-		.exec((err, newUser) => {
-			if (err || !newUser) {
+	if (!req.file) {
+		if (!req.user) {
+			return cb(new Error("Not logged"), false);
+		}
+		let message = validation(req);
+		if (message) {
+			return res.status(500).json({ message });
+		}
+		afterUpload();
+	} else {
+		cloudinary.v2.uploader.upload(req.file.path, function (error, result) {
+			if (error || !result) {
 				return res.status(500).json({ message: "Somethihg went wrong" });
 			}
-
-			req.user = newUser;
-
-			return res.status(200).json(newUser);
+			userInfo["imageUrl"] = result.secure_url;
+			afterUpload();
 		});
+	}
+
+	const afterUpload = () => {
+		if(req.body.password != req.user.password) {
+			const salt = bcrypt.genSaltSync(10);
+			const hashPass = bcrypt.hashSync(userInfo.password, salt);
+
+			userInfo["password"] = hashPass;
+		}
+
+		if (req.body.languagesOffered) {
+				userInfo["languagesOffered"] = JSON.parse(req.body.languagesOffered);
+			}
+
+		if (req.body.languagesDemanded) {
+				userInfo["languagesDemanded"] = JSON.parse(req.body.languagesDemanded);
+			}
+
+		User.findByIdAndUpdate(req.user.id, { $set: userInfo }, { new: true })
+				.exec((err, newUser) => {
+					if (err || !newUser) {
+						return res.status(500).json({ message: "Somethihg went wrong" });
+					}
+
+					req.user = newUser;
+
+					return res.status(200).json(newUser);
+				});
+	}
 
 });
 

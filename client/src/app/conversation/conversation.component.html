@@ -18,7 +18,7 @@
         <div class="hidden-xs col-sm-2 flex">
           <div class="list-group-item">
             <a [routerLink]="['/profile', {id: msg.from._id}]">
-              <img class="little-profile" [src]="BASE_URL + msg.from.imageUrl" />
+              <img class="little-profile" [src]="msg.from.imageUrl" />
             </a>
             <div>
               <h5><a [routerLink]="['/profile', {id: msg.from._id}]">{{msg.from.username}}</a></h5>

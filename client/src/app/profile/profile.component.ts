@@ -11,7 +11,6 @@ import * as _ from 'underscore';
   styleUrls: ['./profile.component.css']
 })
 export class ProfileComponent implements OnInit {
-  BASE_URL: String = 'http://localhost:3000';
   currentUser: any;
   status: String = "";
   user: any;

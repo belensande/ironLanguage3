@@ -14,7 +14,7 @@ import * as _ from 'underscore';
 })
 export class ConversationComponent implements OnInit, OnDestroy {
   @ViewChild('chat') private chat: ElementRef;
-  BASE_URL: string = 'http://localhost:3000';
+
   currentUser: any;
   contact: string;
   text: string = "";

@@ -13,7 +13,7 @@ import * as _ from 'underscore';
 })
 export class MeetupChatComponent implements OnInit, OnDestroy {
   @ViewChild('chat') private chat: ElementRef;
-  BASE_URL: String = 'http://localhost:3000';
+
   currentUser: any;
   id: string;
   text: string = "";

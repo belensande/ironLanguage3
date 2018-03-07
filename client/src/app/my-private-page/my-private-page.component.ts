@@ -13,7 +13,6 @@ import * as _ from 'underscore';
   styleUrls: ['./my-private-page.component.css']
 })
 export class MyPrivatePageComponent implements OnInit {
-  BASE_URL: string = 'http://localhost:3000';
   currentUser: any;
   meetups: Number;
   assistMeetups: Number;

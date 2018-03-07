@@ -4,6 +4,7 @@ import { ProfileService } from "./../services/profile.service";
 import { CollectionsService } from "../services/collections.service";
 import { Router } from '@angular/router';
 import * as _ from 'underscore';
+import { environment } from '../../environments/environment'
 
 @Component({
   selector: 'app-profile-search',
@@ -11,7 +12,6 @@ import * as _ from 'underscore';
   styleUrls: ['./profile-search.component.css']
 })
 export class ProfileSearchComponent implements OnInit {
-  BASE_URL: string = 'http://localhost:3000';
 
   totalUsers: any[] = [];
   users: any[] = [];

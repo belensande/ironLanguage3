@@ -5,6 +5,7 @@ import { ProfileService } from "../services/profile.service";
 import { Router } from '@angular/router';
 import { FileUploader } from 'ng2-file-upload';
 import * as _ from 'underscore';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-auth-signup',
@@ -12,7 +13,7 @@ import * as _ from 'underscore';
   styleUrls: ['./auth-signup.component.css']
 })
 export class AuthSignupComponent implements OnInit {
-  BASE_URL: string = 'http://localhost:3000';
+  BASE_URL: string = environment.BASE_URL;
   uploader: FileUploader;
 
   isEdit: boolean = false;
@@ -42,7 +43,11 @@ export class AuthSignupComponent implements OnInit {
       .subscribe(
       (user) => {
         if (user) {
-          if (this.router.url === "/edit") {
+          if (this.router.url !== "/edit") {
+            this.router.navigate(['/private']);
+          } else {
+            this.isEdit = true;
+
             this.uploader = new FileUploader({
               url: `${this.BASE_URL}/api/profiles`
             });
@@ -65,52 +70,60 @@ export class AuthSignupComponent implements OnInit {
             };
             this.city = user.city;
             if (user.gender) {
-              this.gender= user.gender;
-            }            
+              this.gender = user.gender;
+            }
             this.languagesOffered = user.languagesOffered;
             this.languagesDemanded = user.languagesDemanded;
             this["avatar"] = user.imageUrl;
+
+            this.uploader = new FileUploader({
+              url: `${this.BASE_URL}/api/profiles/`
+            });
+          }
+        } else {
+          if (this.router.url !== "/signup") {
+            this.router.navigate(['/login']);
           } else {
             this.uploader = new FileUploader({
               url: `${this.BASE_URL}/api/signup/`
             });
-
-            this.uploader.onBuildItemForm = (item, form) => {
-              form.append('username', this.formInfo.username);
-              form.append('password', this.formInfo.password);
-              form.append('email', this.formInfo.email);
-              form.append('name', this.formInfo.name);
-              form.append('description', this.formInfo.description);
-              form.append('interests', this.formInfo.interests);
-              if (this.formInfo.city) {
-                form.append('city', this.formInfo.city);
-              }
-              if (this.formInfo.gender) {
-                form.append('gender', this.formInfo.gender);
-              }
-              if (this.formInfo.languagesOffered) {
-                form.append('languagesOffered', this.formInfo.languagesOffered);
-              }
-              if (this.formInfo.languagesOffered) {
-                form.append('languagesDemanded', this.formInfo.languagesDemanded);
-              }
-            };
-
-            this.uploader.onSuccessItem = (item, response) => {
-              if (this.isEdit) {
-                this.router.navigate(['/profile']);
-              } else {
-                this.router.navigate(['/private']);
-              }
-            };
-
-            this.uploader.onErrorItem = (item, response, status, headers) => {
-              item.isUploaded = false;
-              this.error = JSON.parse(response).message;
-            };
           }
         }
-      });
+
+        this.uploader.onBuildItemForm = (item, form) => {
+          form.append('username', this.formInfo.username);
+          form.append('password', this.formInfo.password);
+          form.append('email', this.formInfo.email);
+          form.append('name', this.formInfo.name);
+          form.append('description', this.formInfo.description);
+          form.append('interests', this.formInfo.interests);
+          if (this.formInfo.city) {
+            form.append('city', this.formInfo.city);
+          }
+          if (this.formInfo.gender) {
+            form.append('gender', this.formInfo.gender);
+          }
+          if (this.formInfo.languagesOffered) {
+            form.append('languagesOffered', this.formInfo.languagesOffered);
+          }
+          if (this.formInfo.languagesOffered) {
+            form.append('languagesDemanded', this.formInfo.languagesDemanded);
+          }
+        };
+
+        this.uploader.onSuccessItem = (item, response) => {
+          if (this.isEdit) {
+            this.router.navigate(['/profile']);
+          } else {
+            this.router.navigate(['/private']);
+          }
+        };
+
+        this.uploader.onErrorItem = (item, response, status, headers) => {
+          item.isUploaded = false;
+          this.error = JSON.parse(response).message;
+        };
+    });
 
     this.collectionsService.getLanguages()
       .subscribe(
@@ -138,7 +151,8 @@ export class AuthSignupComponent implements OnInit {
   selectedLanguage(field: string, language: string) { return _.indexOf(this[field], language) != -1; }
 
   submit() {
-    
+    this.error = "";
+
     if(!this.formInfo.username || !this.formInfo.password || !this.formInfo.email || !this.formInfo.name) {
       this.error="You must provide username, password, email and name"
     }

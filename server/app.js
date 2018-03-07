@@ -46,15 +46,8 @@ require('./passport')(app);
 
 app.use('/', index);
 
-/*app.all('/*', (req, res) => {
-  res.sendFile(__dirname + '/public/index.html');
-});*/
-
-app.use(function (req, res, next) {
-	var err = new Error();
-	err.message = 'Not Found';
-	err.status = 404;
-	next(err);
+app.use(function (req, res) {
+	res.sendfile(__dirname + '/public/index.html');
 });
 
 app.use(function (err, req, res, next) {
