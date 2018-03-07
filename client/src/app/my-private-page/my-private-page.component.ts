@@ -22,7 +22,7 @@ export class MyPrivatePageComponent implements OnInit {
   error: string;
 
   constructor(private session: SessionService, private meetup: MeetupService,
-    private relation: RelationService, public chatService: ChatService,
+    private relation: RelationService, private messageService: MessageService, public chatService: ChatService,
     private router: Router) { }
 
   ngOnInit() {
@@ -32,6 +32,11 @@ export class MyPrivatePageComponent implements OnInit {
         if (!user) {
           this.router.navigate(['/login']);
         } else {
+          this.messageService.getNews().subscribe(
+            (messages) => {
+              this.chatService.manageNews(messages);
+            });
+
           this.meetup.get(user.city)
             .subscribe(meetups => {
               this.meetups = meetups ? meetups.length : 0;

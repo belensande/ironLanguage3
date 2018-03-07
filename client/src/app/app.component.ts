@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from "rxjs/Rx";
 import { SessionService } from "./services/session.service";
-import { MessageService } from "./services/message.service";
 import { Router } from '@angular/router';
 import { NavigationEnd } from '@angular/router';
 import { ChatService } from './services/chat.service';
@@ -13,22 +12,11 @@ import { ChatService } from './services/chat.service';
 })
 export class AppComponent implements OnInit {
   constructor(private sessionService: SessionService, private router: Router,
-    private messageService: MessageService, public chatService: ChatService) { }
+    public chatService: ChatService) { }
   userLogged: boolean = false;
   id: string = "";
 
   ngOnInit() {
-    this.sessionService.isLogged()
-      .subscribe(
-      (user) => {
-        if (user) {
-          this.messageService.getNews().subscribe(
-            (messages) => {
-              this.chatService.manageNews(messages);
-            });
-        }
-      });
-
     this.router.events.subscribe((e: any) => {
       if (e instanceof NavigationEnd) {
         this.initialise();
