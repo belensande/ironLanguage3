@@ -6,7 +6,7 @@ const Message = require('../models/message');
 const Meetup = require('../models/meetup');
 const MeetupMessage = require('../models/meetupMessage');
 
-mongoose.connect("mongodb://echanovevaro:qweMN987@ds259268.mlab.com:59268/heroku_f4zs1pc7")
+mongoose.connect("mongodb://localhost:27017/iron-language")
 	.then((db) => {
 		console.log('Connected to Server successfully!');
 	})
