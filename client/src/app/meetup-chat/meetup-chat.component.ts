@@ -75,7 +75,11 @@ export class MeetupChatComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.chatService.leaveChat();
-    this.subscription.unsubscribe();
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
+    if (this.chatService) {
+      this.chatService.leaveChat();
+    }
   }
 }

@@ -64,7 +64,7 @@ export class ChatService {
     const messagesChecked = _.reduce(this.messages, (total, msg) => {
       return msg.from._id == this.chatId && !msg.checked ? ++total : total;
     }, 0);
-    this.news -= messagesChecked;
+    this.news = this.news >= messagesChecked ? this.news - messagesChecked : 0;
   }
 
   leavePrivateChat() {
