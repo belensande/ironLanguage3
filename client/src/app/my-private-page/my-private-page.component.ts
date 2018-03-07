@@ -17,15 +17,14 @@ export class MyPrivatePageComponent implements OnInit {
   currentUser: any;
   meetups: Number;
   assistMeetups: Number;
-  newMessages: Number = 0;
   ownMeetups: Number;
   petitions: Number;
   relations: Number;
   error: string;
 
   constructor(private session: SessionService, private meetup: MeetupService,
-    private relation: RelationService, private chatService: ChatService,
-    private messageService: MessageService, private router: Router) { }
+    private relation: RelationService, public chatService: ChatService,
+    private router: Router) { }
 
   ngOnInit() {
     this.session.isLogged()
@@ -34,11 +33,6 @@ export class MyPrivatePageComponent implements OnInit {
         if (!user) {
           this.router.navigate(['/login']);
         } else {
-          this.chatService.newsSubject.subscribe(
-            (news: number) => {
-              this.newMessages = news || 0;
-            });
-
           this.meetup.get(user.city)
             .subscribe(meetups => {
               this.meetups = meetups ? meetups.length : 0;

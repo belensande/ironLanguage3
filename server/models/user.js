@@ -58,6 +58,10 @@ const userSchema = new Schema({
 		unchecked: {
 			type: Number,
 			default: 0
+		},
+		created: {
+			type: Date,
+			default: () => new Date()
 		}
 	}],
 	petitions: [{

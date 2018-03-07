@@ -13,9 +13,9 @@
 
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav navbar-right">
-        <li *ngIf="userLogged && newMessages">
+        <li *ngIf="userLogged && chatService.news">
             <a [routerLink]="['/relations']">
-              Messages received <small class="label badge-pill">{{newMessages}}</small>
+              Messages received <small class="label badge-pill">{{chatService.news}}</small>
             </a>
         </li>
         <li *ngIf="userLogged" class="dropdown">

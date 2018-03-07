@@ -16,7 +16,7 @@ export class RelationsComponent implements OnInit {
   messages: any;
   error: string = "";
   constructor(private session: SessionService, private relation: RelationService,
-    private chatService: ChatService, private router: Router) { }
+    public chatService: ChatService, private router: Router) { }
 
   ngOnInit() {
     this.session.isLogged()
@@ -28,27 +28,12 @@ export class RelationsComponent implements OnInit {
           this.relation.getRelations().subscribe(
             (user) => {
               this.currentUser = user;
-
-              this.currentUser.relations = _.chain(this.currentUser.relations)
-                .sortBy("contact.username")
-                .sortBy(function (rel) {
-                  return rel.lastMessage ? - new Date(rel.lastMessage).getTime() : 0;
-                }).value();
-
-              this.chatService.messagesSubject.subscribe(
-                (message: any) => {
-                  this.currentUser.relations = _.map(this.currentUser.relations, rel => {
-                    if (rel['_id'] == message.from._id) {
-                      return _.extend(rel, { lastMessage: message.created_at, unchecked: rel['unchecked'] + 1 });
-                    } else {
-                      return rel;
-                    }
-                  })
-                });
+              this.chatService.viewRelations(user.relations);
             },
             (err) => {
               this.error = err;
-            });
+            }
+          );
         }
       });
   }
@@ -58,6 +43,7 @@ export class RelationsComponent implements OnInit {
       .subscribe(
       (user) => {
         this.currentUser = user;
+        this.chatService.viewRelations(user.relations);
       },
       (err) => {
         this.error = err;

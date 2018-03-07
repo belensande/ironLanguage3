@@ -60,8 +60,8 @@ export class MeetupService {
       .catch(this.handleError);
   }
 
-  sendMessage(id, message) {
-    return this.http.post(`${this.BASE_URL}/messages/${id}`, { message: message}, options)
+  sendMessage(message) {
+    return this.http.post(`${this.BASE_URL}/messages/${message.meetup}`, { message }, options)
       .map((res) => res.json())
       .catch(this.handleError);
   }

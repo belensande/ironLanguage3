@@ -13,7 +13,7 @@
     <div class="alert alert-danger" *ngIf="error">
       {{error}}
     </div>
-    <div class="row list-group" *ngFor="let msg of messages">
+    <div class="row list-group" *ngFor="let msg of chatService.messages">
       <div class="col-xs-12 flex" [ngClass]="{'right': msg.from._id == currentUser._id, 'text-right': msg.from._id == currentUser._id}">
         <div class="hidden-xs col-sm-2 flex">
           <div class="list-group-item">

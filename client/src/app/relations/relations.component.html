@@ -12,10 +12,10 @@
       <div class="list-group-item title">
         <span>Contacts</span>
       </div>
-      <div *ngIf="!currentUser.relations || !currentUser.relations.length" class="list-group-item">
+      <div *ngIf="!chatService.relations || !chatService.relations.length" class="list-group-item">
         <span>No contacts found</span>
       </div>
-      <div *ngFor="let relation of currentUser.relations" class="list-group-item">
+      <div *ngFor="let relation of chatService.relations" class="list-group-item">
         <div class="row">
           <div class="col-xs-12 container-separated-items">
             <div class="inline-content">

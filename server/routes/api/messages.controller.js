@@ -54,9 +54,7 @@ router.post('/:id', function (req, res, next) {
 });
 
 router.get('/news', function (req, res, next) {
-	Message.find({ to: req.user._id, checked: false })
-		.populate({ path: 'from to', model: 'User' })
-		.exec()
+	Message.count({ to: req.user._id, checked: false })
 		.then(messages => {
 			return res.status(200).json(messages);
 		})
