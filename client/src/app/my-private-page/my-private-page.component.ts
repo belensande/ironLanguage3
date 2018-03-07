@@ -32,6 +32,8 @@ export class MyPrivatePageComponent implements OnInit {
         if (!user) {
           this.router.navigate(['/login']);
         } else {
+          this.chatService.connect(user._id);
+
           this.messageService.getNews().subscribe(
             (messages) => {
               this.chatService.manageNews(messages);
