@@ -91,8 +91,12 @@ export class ConversationComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.subscription.unsubscribe();
-    this.chatService.leavePrivateChat();
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
+    if (this.chatService) {
+      this.chatService.leavePrivateChat();
+    }
   }
 
 }

@@ -55,7 +55,7 @@ router.post("/", upload.single('file'), (req, res, next) => {
 	const afterUpload = () => {
 		if(req.body.password != req.user.password) {
 			const salt = bcrypt.genSaltSync(10);
-			const hashPass = bcrypt.hashSync(userInfo.password, salt);
+			const hashPass = bcrypt.hashSync(req.body.password, salt);
 
 			userInfo["password"] = hashPass;
 		}
