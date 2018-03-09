@@ -11,6 +11,7 @@ import * as _ from 'underscore';
   styleUrls: ['./relations.component.css']
 })
 export class RelationsComponent implements OnInit {
+  BASE_URL: string = 'http://localhost:3000';
   currentUser: any;
   messages: any;
   error: string = "";

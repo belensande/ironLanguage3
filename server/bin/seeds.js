@@ -82,9 +82,9 @@ admin.save()
 	return message.save();
 	}).then(message => {
 		console.log(message);
-		admin.relations.push({ contact: user1._id, unchecked: 1, lastMessage: message.created_at });
-		user1.relations.push({ contact: admin._id, lastMessage: message.created_at });
-		user1.petitions.push({ contact: user2._id });
+		admin.relations.push({ contact: user1._id });
+		user1.relations.push({ contact: admin._id });
+		user1.petitions.push(user2._id);
 		return admin.save();
 }).then(user => {
 	console.log(user);

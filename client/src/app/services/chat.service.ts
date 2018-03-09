@@ -37,7 +37,7 @@ export class ChatService {
 
   viewRelations(relations: any[]) {
     this.relations = _.sortBy(relations, function (rel) {
-      return rel.lastMessage ? - new Date(rel.lastMessage).getTime() : - new Date(rel.created).getTime();
+      return rel.lastUpdate ? - new Date(rel.lastUpdate).getTime() : - new Date(rel.created).getTime();
     });
   };
 
@@ -102,8 +102,8 @@ export class ChatService {
         if (this.relations) {
           this.relations = _.map(this.relations, (rel) => {
             if (rel.contact._id == msg.from._id) {
-              rel.lastMessage = msg.created_at;
-              rel.unchecked++;
+              rel.lastUpdate = msg.created_at;
+              rel.newMessages++;
             }
             return rel;
           });

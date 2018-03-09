@@ -65,9 +65,7 @@ export class ConversationComponent implements OnInit, OnDestroy {
   checkMessages() {
     this.messageService.chekMessages(this.contact)
       .subscribe(
-      (user) => {
-        this.currentUser = user;
-      },
+      (result) => {},
       (err) => {
         this.error = err;
       });

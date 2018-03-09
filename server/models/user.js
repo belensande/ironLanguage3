@@ -1,5 +1,39 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+const Message = require("./message");
+
+const relationSchema = new Schema({
+	contact: {
+		type: Schema.Types.ObjectId,
+		ref: 'User',
+		required: [true, 'User is mandatory.']
+	}
+}, {
+		timestamps: { createdAt: "created_at", updatedAt: "updated_at" },
+		toObject: {
+			virtuals: true
+		}
+		, toJSON: {
+			virtuals: true
+		}
+	}
+)
+
+relationSchema.virtual('newMessages')
+	.get(function () {
+		return this.__news;
+	})
+	.set(function (newMessages) {
+		this.__news = newMessages;
+	});
+
+relationSchema.virtual('lastUpdate')
+	.get(function () {
+		return this.__last;
+	})
+	.set(function (lastUpdate) {
+		this.__last = lastUpdate;
+	});
 
 const userSchema = new Schema({
 	username: {
@@ -48,37 +82,45 @@ const userSchema = new Schema({
 		type: String,
 		default: 'https://res.cloudinary.com/hbuvh6zav/image/upload/v1520410160/noimage.jpg'
 	},
-	relations: [{
-		contact: {
-			type: Schema.Types.ObjectId,
-			ref: 'User',
-			required: [true, 'User is mandatory.']
-		},
-		lastMessage: Date,
-		unchecked: {
-			type: Number,
-			default: 0
-		},
-		created: {
-			type: Date,
-			default: () => new Date()
-		}
-	}],
-	petitions: [{
-		contact: {
-			type: Schema.Types.ObjectId,
-			ref: 'User',
-			required: [true, 'User is mandatory.']
-		},
-		created: {
-			type: Date,
-			default: () => new Date()
-		}
-	}]
+	relations: [relationSchema],
+	petitions: {
+		type: [Schema.Types.ObjectId],
+		ref: 'User'
+	}
 }, {
 		timestamps: { createdAt: "created_at", updatedAt: "updated_at" },
-		usePushEach: true
-});
+		usePushEach: true,
+		toObject: {
+			virtuals: true
+		}
+		, toJSON: {
+			virtuals: true
+		}
+	});
+
+userSchema.methods.getNewMessagesFrom = function getNewMessagesFrom(contactId) {
+	return Message.count({ from: contactId, to: this._id, checked: false })
+		.then(news => {
+			return Promise.resolve(news)
+		}).catch(err => {
+			return Promise.reject(err);
+		});
+};
+
+userSchema.methods.getLastUpdateWith = function getLastUpdateWith(contactId) {
+	return Message.findOne()
+		.and([
+			{ $or: [{ from: this._id }, { to: this._id }] },
+			{ $or: [{ from: contactId }, { to: contactId }] }
+		])
+		.sort({ created_at: -1 })
+		.exec()
+		.then(msg => {
+			return Promise.resolve(msg ? msg.created_at : '');
+		}).catch(err => {
+			return Promise.reject(err);
+		});
+};
 
 const User = mongoose.model("User", userSchema);
 

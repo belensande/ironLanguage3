@@ -29,14 +29,14 @@
                   <h4><a [routerLink]="['/profile', {id: relation.contact._id}]">{{relation.contact.username}}</a> <small class="space-right" *ngFor="let lang of relation.contact.languagesOffered">{{lang}}</small></h4>
                 </div>
                 <div>
-                  <small *ngIf="!relation.lastMessage">
+                  <small *ngIf="!relation.lastUpdate">
                     No messages
                   </small>
-                  <small *ngIf="relation.lastMessage">
-                    {{relation.lastMessage | date:'medium'}}
+                  <small *ngIf="relation.lastUpdate">
+                    {{relation.lastUpdate | date:'medium'}}
                   </small>
                   <a [routerLink]="['/relations', relation.contact._id]">
-                    <small *ngIf="relation.unchecked" class="label badge-pill">{{relation.unchecked}}</small>
+                    <small *ngIf="relation.newMessages" class="label badge-pill">{{relation.newMessages}}</small>
                   </a>
                 </div>
               </div>
@@ -58,8 +58,8 @@
         <span>No requests found</span>
       </div>
       <div *ngFor="let petition of currentUser.petitions" class="list-group-item container-separated-items">
-        <h4><a [routerLink]="['/profile', {id: petition.contact._id}]">{{petition.contact.username}}</a> <small class="space-right" *ngFor="let lang of petition.contact.languagesOffered">{{lang}}</small></h4>
-        <a href="javascript:;" (click)="accept(petition.contact._id)">accept <small class="glyphicon glyphicon-ok"></small></a>
+        <h4><a [routerLink]="['/profile', {id: petition._id}]">{{petition.username}}</a> <small class="space-right" *ngFor="let lang of petition.languagesOffered">{{lang}}</small></h4>
+        <a href="javascript:;" (click)="accept(petition._id)">accept <small class="glyphicon glyphicon-ok"></small></a>
       </div>
     </div>
   </div>
